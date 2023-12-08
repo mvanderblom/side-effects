@@ -17,10 +17,23 @@ Some requirements:
 
 ## Decision
 
-What is the change that we're proposing and/or doing?
-
+Create a service that uses scheduling as a trigger to execute side effects.
 
 
 ## Consequences
+
+Work is separated from the main thread because the scheduled function
+is called from another thread.
+
+**Pro's**
+ - easy to implement
+ - easy to understand
+
+**Con's**
+ - It's all in memory so what happens when instance is shut down
+   - Could be that this is ok? 
+     - Current way of doing things is also "in memory"
+     - This way increases the wait time though
+   - Should then only be used for non-critical work.
 
 What becomes easier or more difficult to do because of this change?
