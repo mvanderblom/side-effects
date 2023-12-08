@@ -1,7 +1,5 @@
 package dev.vanderblom.intergamma.sideeffects.scheduling
 
-import dev.vanderblom.intergamma.sideeffects.scheduling.ExampleController
-import dev.vanderblom.intergamma.sideeffects.scheduling.TestableSchedulingSideEffectService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset
 import org.junit.jupiter.api.BeforeEach
@@ -11,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import kotlin.system.measureTimeMillis
 
 @SpringBootTest
-class ExampleControllerTest {
+class SchedulingExampleControllerTest {
 
     @Autowired
-    private lateinit var exampleController: ExampleController
+    private lateinit var controller: SchedulingExampleController
 
     @Autowired
     private lateinit var testableSchedulingSideEffectService: TestableSchedulingSideEffectService
@@ -29,11 +27,11 @@ class ExampleControllerTest {
     @Test
     fun `workload gets executed outside of main thread`() {
         val mainThreadExecTime = measureTimeMillis {
-            exampleController.someEndpoint()
+            controller.someEndpoint()
         }
 
         assertThat(mainThreadExecTime)
-            .isLessThan(100)
+            .isLessThan(10)
 
         Thread.sleep(2_000)
         assertSuccessfulSideEffects(2)
@@ -43,11 +41,11 @@ class ExampleControllerTest {
     @Test
     fun `exceptions in side effects do not impact main thread`() {
         val mainThreadExecTime = measureTimeMillis {
-            exampleController.endpointWithBadSideEffect()
+            controller.endpointWithBadSideEffect()
         }
 
         assertThat(mainThreadExecTime)
-            .isLessThan(100)
+            .isLessThan(10)
 
         Thread.sleep(2_000)
 
@@ -58,11 +56,11 @@ class ExampleControllerTest {
     @Test
     fun `sideEffects are run concurrently`() {
         val mainThreadExecTime = measureTimeMillis {
-            exampleController.endpointWithSideEffectsThatTakeTime()
+            controller.endpointWithSideEffectsThatTakeTime()
         }
 
         assertThat(mainThreadExecTime)
-            .isLessThan(100)
+            .isLessThan(10)
 
         Thread.sleep(2_000)
 

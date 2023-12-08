@@ -20,6 +20,9 @@ class CoroutineSchedulingSideEffectService {
   fun runSideEffects() {
     runBlocking(Dispatchers.IO) {
       while (!sideEffects.empty()){
+        // This needs to be outside of launch because otherwise it will launch more coroutines
+        // than there are side effects on the stack causing an EmptyStackException which leads
+        // to all coroutines being cancelled.
         val sideEffect = sideEffects.pop()
         launch {
           runSideEffect(sideEffect)

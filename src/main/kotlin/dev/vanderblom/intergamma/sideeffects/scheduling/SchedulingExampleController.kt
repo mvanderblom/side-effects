@@ -4,7 +4,7 @@ import dev.vanderblom.intergamma.sideeffects.BusinessService
 import org.springframework.stereotype.Component
 
 @Component
-class ExampleController (
+class SchedulingExampleController (
   private val businessService: BusinessService,
   private val testableSchedulingSideEffectService: TestableSchedulingSideEffectService
 ) {

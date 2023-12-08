@@ -21,21 +21,25 @@ Create a service that uses scheduling as a trigger to execute side effects.
 
 ## Consequences
 
-Work is separated from the main thread because the scheduled function
-is called from another thread.
+Work is separated from the main thread because the scheduled function is called from another thread.
 
 **Pro's**
- - easy to implement
- - easy to understand
- - easy to pass data from the main workload to the side effects
+ - Easy to use
+   - Pass data from the main workload to the side effects by just passing params
 
 **Con's**
+ - Non-trivial to implement and understand with coroutines
+   - See comment about popping the stack
+   - See what you need to know about how exceptions behave whit in coroutines
+   - See diff with non coroutines version
+ - Manual exception handling because otherwise all side effects will get cancelled
  - It's all in memory so what happens when instance is shut down
-   - Could be that this is ok? 
-     - Current way of doing things is also "in memory"
-     - This way increases the wait time though
-   - Should then only be used for non-critical work. 
+   - Could be acceptable?
+      - Current way of doing things is also "in memory"
+      - This way increases the wait time though
+      - Should then only be used for non-critical work. 
  - Debugging will get harder, because how would you know which side effect threw the exception? 
+   - ie.: side effects are anonymous functions
  - We're writing our own framework (not our core business)
    - Next feature requests will probably be 
      - add ordering to side effects 
