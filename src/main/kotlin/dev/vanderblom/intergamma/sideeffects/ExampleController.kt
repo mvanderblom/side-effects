@@ -1,5 +1,6 @@
 package dev.vanderblom.intergamma.sideeffects
 
+import kotlinx.coroutines.delay
 import org.springframework.stereotype.Component
 
 @Component

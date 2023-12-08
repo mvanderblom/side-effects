@@ -19,7 +19,6 @@ Some requirements:
 
 Create a service that uses scheduling as a trigger to execute side effects.
 
-
 ## Consequences
 
 Work is separated from the main thread because the scheduled function

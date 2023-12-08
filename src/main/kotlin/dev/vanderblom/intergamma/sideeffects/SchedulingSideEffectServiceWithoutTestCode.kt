@@ -10,13 +10,9 @@ import java.util.Stack
 import kotlin.system.measureTimeMillis
 
 @Component
-class SchedulingSideEffectService {
+class SchedulingSideEffectServiceWithoutTestCode {
 
   private val sideEffects = Stack<() -> Unit>()
-
-  var successfulSideEffects = 0
-  var brokenSideEffects = 0
-  var latestExecTime = 0L
 
   fun registerSideEffect(block: () -> Unit) {
     sideEffects.push(block)
@@ -24,18 +20,13 @@ class SchedulingSideEffectService {
 
   @Scheduled(fixedRate = 1_000)
   fun runSideEffects() {
-    val execTime = measureTimeMillis {
-      runBlocking(Dispatchers.IO) {
-        while (!sideEffects.empty()){
-          val sideEffect = sideEffects.pop()
-          launch {
-            runSideEffect(sideEffect)
-          }
+    runBlocking(Dispatchers.IO) {
+      while (!sideEffects.empty()){
+        val sideEffect = sideEffects.pop()
+        launch {
+          runSideEffect(sideEffect)
         }
       }
-    }
-    if (execTime > 10) { // Only for testing purposes
-      latestExecTime = execTime
     }
   }
 
@@ -43,13 +34,10 @@ class SchedulingSideEffectService {
     try {
       println("Invoking side-effect from t: ${Thread.currentThread().id}")
       sideEffect.invoke()
-      successfulSideEffects++
       println("Done invoking side-effect from t: ${Thread.currentThread().id}")
     } catch (e: Exception) {
-      brokenSideEffects++
       e.printStackTrace() // this should be a log statement off course
       // rethrowing e would stop all side effects from being executed.
     }
   }
 }
-

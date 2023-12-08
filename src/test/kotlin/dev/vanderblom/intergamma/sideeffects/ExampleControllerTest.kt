@@ -1,6 +1,7 @@
 package dev.vanderblom.intergamma.sideeffects
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.data.Offset
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,7 @@ class ExampleControllerTest {
     fun setUp() {
         schedulingSideEffectService.successfulSideEffects = 0
         schedulingSideEffectService.brokenSideEffects = 0
+        schedulingSideEffectService.latestExecTime = 0L
     }
 
     @Test
@@ -49,6 +51,22 @@ class ExampleControllerTest {
 
         assertSuccessfulSideEffects(1)
         assertBrokenSideEffects(1)
+    }
+
+    @Test
+    fun `sideEffects are run concurrently`() {
+        val mainThreadExecTime = measureTimeMillis {
+            exampleController.endpointWithSideEffectsThatTakeTime()
+        }
+
+        assertThat(mainThreadExecTime)
+            .isLessThan(100)
+
+        Thread.sleep(2_000)
+
+        assertSuccessfulSideEffects(2)
+        assertThat(schedulingSideEffectService.latestExecTime)
+            .isCloseTo(500, Offset.offset(100))
     }
 
     private fun assertSuccessfulSideEffects(expected: Int) {
