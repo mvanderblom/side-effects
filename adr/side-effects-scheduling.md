@@ -27,12 +27,17 @@ is called from another thread.
 **Pro's**
  - easy to implement
  - easy to understand
+ - easy to pass data from the main workload to the side effects
 
 **Con's**
  - It's all in memory so what happens when instance is shut down
    - Could be that this is ok? 
      - Current way of doing things is also "in memory"
      - This way increases the wait time though
-   - Should then only be used for non-critical work.
-
-What becomes easier or more difficult to do because of this change?
+   - Should then only be used for non-critical work. 
+ - Debugging will get harder, because how would you know which side effect threw the exception? 
+ - We're writing our own framework (not our core business)
+   - Next feature requests will probably be 
+     - add ordering to side effects 
+     - make one dependent on the other
+     - etc...

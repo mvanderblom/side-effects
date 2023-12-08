@@ -1,5 +1,7 @@
-package dev.vanderblom.intergamma.sideeffects
+package dev.vanderblom.intergamma.sideeffects.scheduling
 
+import dev.vanderblom.intergamma.sideeffects.scheduling.ExampleController
+import dev.vanderblom.intergamma.sideeffects.scheduling.TestableSchedulingSideEffectService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset
 import org.junit.jupiter.api.BeforeEach
@@ -15,13 +17,13 @@ class ExampleControllerTest {
     private lateinit var exampleController: ExampleController
 
     @Autowired
-    private lateinit var schedulingSideEffectService: SchedulingSideEffectService
+    private lateinit var testableSchedulingSideEffectService: TestableSchedulingSideEffectService
 
     @BeforeEach
     fun setUp() {
-        schedulingSideEffectService.successfulSideEffects = 0
-        schedulingSideEffectService.brokenSideEffects = 0
-        schedulingSideEffectService.latestExecTime = 0L
+        testableSchedulingSideEffectService.successfulSideEffects = 0
+        testableSchedulingSideEffectService.brokenSideEffects = 0
+        testableSchedulingSideEffectService.latestExecTime = 0L
     }
 
     @Test
@@ -65,19 +67,19 @@ class ExampleControllerTest {
         Thread.sleep(2_000)
 
         assertSuccessfulSideEffects(2)
-        assertThat(schedulingSideEffectService.latestExecTime)
+        assertThat(testableSchedulingSideEffectService.latestExecTime)
             .isCloseTo(500, Offset.offset(100))
     }
 
     private fun assertSuccessfulSideEffects(expected: Int) {
-        assertThat(schedulingSideEffectService.successfulSideEffects)
-            .withFailMessage("expected $expected side effect(s) to be successful, but found ${schedulingSideEffectService.successfulSideEffects}")
+        assertThat(testableSchedulingSideEffectService.successfulSideEffects)
+            .withFailMessage("expected $expected side effect(s) to be successful, but found ${testableSchedulingSideEffectService.successfulSideEffects}")
             .isEqualTo(expected)
     }
 
     private fun assertBrokenSideEffects(expected: Int) {
-        assertThat(schedulingSideEffectService.brokenSideEffects)
-            .withFailMessage("expected $expected side effect(s) to be broken, but found ${schedulingSideEffectService.brokenSideEffects}")
+        assertThat(testableSchedulingSideEffectService.brokenSideEffects)
+            .withFailMessage("expected $expected side effect(s) to be broken, but found ${testableSchedulingSideEffectService.brokenSideEffects}")
             .isEqualTo(expected)
     }
 

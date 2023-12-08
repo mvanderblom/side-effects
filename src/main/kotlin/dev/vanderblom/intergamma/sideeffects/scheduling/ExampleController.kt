@@ -1,41 +1,41 @@
-package dev.vanderblom.intergamma.sideeffects
+package dev.vanderblom.intergamma.sideeffects.scheduling
 
-import kotlinx.coroutines.delay
+import dev.vanderblom.intergamma.sideeffects.BusinessService
 import org.springframework.stereotype.Component
 
 @Component
 class ExampleController (
   private val businessService: BusinessService,
-  private val schedulingSideEffectService: SchedulingSideEffectService
+  private val testableSchedulingSideEffectService: TestableSchedulingSideEffectService
 ) {
 
   fun someEndpoint() {
     businessService.mainWorkload()
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       println("Some Side effect")
     }
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       println("Some Other Side effect")
     }
   }
 
   fun endpointWithBadSideEffect() {
     businessService.mainWorkload()
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       println("Some Side effect")
     }
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       throw IllegalStateException("I'm so baaaad!")
     }
   }
 
   fun endpointWithSideEffectsThatTakeTime() {
     businessService.mainWorkload()
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       Thread.sleep(500)
       println("Some Side effect")
     }
-    schedulingSideEffectService.registerSideEffect {
+    testableSchedulingSideEffectService.registerSideEffect {
       Thread.sleep(500)
       println("Some Side effect")
     }
