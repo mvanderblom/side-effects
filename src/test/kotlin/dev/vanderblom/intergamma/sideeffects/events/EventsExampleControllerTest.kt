@@ -18,6 +18,7 @@ class EventsExampleControllerTest {
     @BeforeEach
     fun setUp() {
         sideEffectEventListener.successfulSideEffects = 0
+        sideEffectEventListener.brokenSideEffects = 0
     }
 
     @Test
