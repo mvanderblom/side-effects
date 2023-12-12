@@ -25,7 +25,7 @@ class SideEffectService2 (
         ) // FIXME this should be be publishing to an actual AWS queue
         listener.receive(
             DeclarationSideEffectEvent2(
-                declaration.id,
+                someImportantResult.id,
                 DeclarationSideEffectEvent2.Type.SOME_IMPORTANT_EVENT
             )
         ) // FIXME this should be be publishing to an actual AWS queue

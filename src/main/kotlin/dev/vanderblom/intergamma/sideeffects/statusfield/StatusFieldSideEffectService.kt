@@ -1,6 +1,5 @@
 package dev.vanderblom.intergamma.sideeffects.statusfield
 
-import dev.vanderblom.intergamma.sideeffects.queue.Declaration2
 import dev.vanderblom.intergamma.sideeffects.transaction
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -100,9 +99,7 @@ class DeclarationRepo3 {
         return declaration
     }
 
-    fun update(declaration: Declaration3) {
-
-    }
+    fun update(declaration: Declaration3) { }
 
     fun getDeclarations(): List<Declaration3> = emptyList()
 }

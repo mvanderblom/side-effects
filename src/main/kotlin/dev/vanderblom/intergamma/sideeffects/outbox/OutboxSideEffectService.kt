@@ -14,7 +14,6 @@ class SideEffectService4(
     // FIXME Scheduled, so multiple instances problem. Probably needs some form of locking
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     fun publishSideEffects(businessTransactionId: String) {
-
         val events = outboxEventRepo.getEvents()
         events.forEach { event ->
             transaction { // FIXME no more open-closed and SRP violations
