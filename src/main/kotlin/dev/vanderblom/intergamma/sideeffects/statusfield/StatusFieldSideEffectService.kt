@@ -1,16 +1,14 @@
 package dev.vanderblom.intergamma.sideeffects.statusfield
 
+import dev.vanderblom.intergamma.sideeffects.queue.Declaration2
 import dev.vanderblom.intergamma.sideeffects.transaction
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-interface StatusFieldSideEffectEvent3<T> {
-    val id: T
-}
 
-data class DeclarationSideEffectEvent3(override val id: String, val type: Type) : StatusFieldSideEffectEvent3<String> {
+data class DeclarationSideEffectEvent3(val id: String, val type: Type) {
     enum class Type {
         CREATED,
         SOME_IMPORTANT_EVENT
@@ -18,9 +16,9 @@ data class DeclarationSideEffectEvent3(override val id: String, val type: Type) 
 }
 
 @Component
-class SideEffectService(
+class SideEffectService3(
     private val listener: StatusFieldSideEffectEventListener3,
-    private val declarationRepo: DeclarationRepo
+    private val declarationRepo: DeclarationRepo3
 ){
     // FIXME Scheduled, so multiple instances problem. Probably needs some form of locking
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
@@ -35,6 +33,7 @@ class SideEffectService(
                 }
             }
             if (!declaration.someImportantEventSent) {
+                // TODO Lookup important event and use that construct the event
                 val event = DeclarationSideEffectEvent3(declaration.id, DeclarationSideEffectEvent3.Type.SOME_IMPORTANT_EVENT)
                 transaction {
                     listener.receive(event) // FIXME this should be be publishing to an actual AWS queue
@@ -46,29 +45,14 @@ class SideEffectService(
 }
 
 @Component
-class StatusFieldSideEffectEventListener3(
-    private val declarationSideEffectEventHandler: DeclarationSideEffectEventHandler3
-) {
+class StatusFieldSideEffectEventListener3{
     // FIXME this would the be called upon receiving each event asynchronously
-    fun receive(event: StatusFieldSideEffectEvent3<out Any>) {
-        when {
-            event is DeclarationSideEffectEvent3 -> { // FIXME Should probably be a factory
-                declarationSideEffectEventHandler.handle(event)
-            }
-            else -> {
-                println("Event type not supported")
-            }
-        }
-    }
-}
-
-@Component
-class DeclarationSideEffectEventHandler3 {
-    fun handle(event: DeclarationSideEffectEvent3){
-        when(event.type) { // FIXME Should probably be a factory
-            DeclarationSideEffectEvent3.Type.CREATED -> println("handling event $event")
-            DeclarationSideEffectEvent3.Type.SOME_IMPORTANT_EVENT -> println("handling event $event")
-        }
+    fun receive(event: DeclarationSideEffectEvent3) {
+        println("handling event $event")
+        // TODO get entity associated with the event and do what needs to be done
+        //  - put a message on a queue
+        //  - do an http call
+        //  - Store something in dynamo
     }
 }
 
@@ -91,10 +75,15 @@ class BusinessService3 (
     }
 }
 
+data class SomeImportantResult3(val id: String)
+
 @Component
 class SomeOtherBusinessService3 {
-    fun doSomethingImportantWith(declaration: Declaration3) {
-        println("doing something important with $declaration")
+    fun doSomethingImportantWith(declaration: Declaration3): SomeImportantResult3 {
+        return transaction {
+            println("doing something important with $declaration")
+            SomeImportantResult3("1337")
+        }
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.UUID
 @Component
 class SideEffectService1 {
     // FIXME This should only be called after the entire "business transaction" has finished, but it's up to the user to do so
-    fun publishSideEffects(declaration: Declaration1, someImportantResult: SomeImportantResult) {
+    fun publishSideEffects(declaration: Declaration1, someImportantResult: SomeImportantResult1) {
         // FIXME Not resilient because if one fails, all will fail and will never be retried
         runBlocking {
             launch {
@@ -45,14 +45,14 @@ class BusinessService1 (
     }
 }
 
-data class SomeImportantResult(val id: String)
+data class SomeImportantResult1(val id: String)
 
 @Component
 class SomeOtherBusinessService1 {
-    fun doSomethingImportantWith(declaration: Declaration1): SomeImportantResult {
+    fun doSomethingImportantWith(declaration: Declaration1): SomeImportantResult1 {
         return transaction {
             println("doing something important with $declaration")
-            SomeImportantResult("1337")
+            SomeImportantResult1("1337")
         }
     }
 

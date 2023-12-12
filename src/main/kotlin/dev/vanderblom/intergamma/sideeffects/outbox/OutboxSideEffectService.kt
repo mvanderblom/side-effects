@@ -63,7 +63,7 @@ class SomeOtherBusinessService4 (
         transaction {
             println("doing something important with $declaration")
             // FIXME Events can be created everywhere. They will get stored if the transaction completes
-            outboxEventRepo.createEvent(OutboxEvent(declaration.id, OutboxEvent.Type.SOME_IMPORTANT_EVENT_OCCURED))
+            outboxEventRepo.createEvent(OutboxEvent("1337", OutboxEvent.Type.SOME_IMPORTANT_EVENT_OCCURED))
         }
     }
 
